@@ -32,7 +32,7 @@ public class MainScreen extends Application {
 
     //Set the scene and show
     mainMenu = new Scene(layout, 300, 300);
-    mainStage.setTitle("2048");
+    mainStage.setTitle("2048 - Main Menu");
     mainStage.setScene(mainMenu);
     mainStage.show();
   }
