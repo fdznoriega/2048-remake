@@ -1,5 +1,5 @@
-import java.util.Optional;
 import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,13 +21,12 @@ import javafx.event.EventHandler;
 
 public class Game extends Application {
 
-    private Stage window;
-    private Label[][] labels = new Label[4][4];
+    private Square[][] squareArray = new Square[4][4];
     private int score;
 
     @Override
     public void start(Stage stage) {
-        window = stage;
+
         score = 0;
 
         initializeNumbers();
@@ -44,8 +43,7 @@ public class Game extends Application {
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-
-                grid.add(createSquare(i, j), i, j);
+                grid.add(squareArray[i][j].getStackPane(), i, j);
             }
         }
 
@@ -63,11 +61,11 @@ public class Game extends Application {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
-                    case UP:    updateLabels("up");     break;
-                    case DOWN:  updateLabels("down");   break;
-                    case LEFT:  updateLabels("left");   break;
-                    case RIGHT: updateLabels("right");  break;
-                  	case D: gameOver(); break;
+                    case UP:    updateLabels("up");    break;
+                    case DOWN:  updateLabels("down");  break;
+                    case LEFT:  updateLabels("left");  break;
+                    case RIGHT: updateLabels("right"); break;
+                    case D: break;
                 }
             }
         });
@@ -79,37 +77,24 @@ public class Game extends Application {
     public void initializeNumbers() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                labels[i][j] = new Label("0");
+                squareArray[i][j] = new Square();
             }
         }
-        insertRandom();
-    }
-
-    public StackPane createSquare(int i, int j) {
-        StackPane stack = new StackPane();
-        Label l = labels[i][j];
-        l.setFont(new Font(30));
-        Rectangle r = new Rectangle(80,80);
-        r.setFill(Color.GREY);
-
-        stack.getChildren().addAll(r, l);
-        return stack;
+        //insertRandom();
     }
 
     public void updateLabels(String direction) {
-        int freeSpaces = 16;
-
-
-        //use labels[x][y]
-        //Integer.parseInt(labels[x][y].getText());
-        //run comparison before this method
+        switch (direction) {
+            case "up":
+                break;
+            case "down":
+                break;
+            case "left":
+                break;
+            case "right":
+                break;
+        }
         insertRandom();
-
-    }
-
-    public void gameOver() {
-      GameOver over = new GameOver();
-      over.start(window);
     }
 
     public void insertRandom() {
@@ -121,12 +106,12 @@ public class Game extends Application {
         randX = (int) (4 * Math.random());
         randY = (int) (4 * Math.random());
         //If spot is free, place a 2 or 4 there
-        spot = Integer.parseInt(labels[randX][randY].getText());
+        spot = squareArray[randX][randY].getNum();
         if(spot == 0) {
           if((int) (99 * Math.random()) > 10) {
-            labels[randX][randY].setText("2");
+            squareArray[randX][randY].setNum(2);
           } else {
-            labels[randX][randY].setText("4");
+            squareArray[randX][randY].setNum(4);
           }
           randomInserted = true;
         }
