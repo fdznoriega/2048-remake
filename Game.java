@@ -22,7 +22,6 @@ import javafx.event.EventHandler;
 public class Game extends Application {
 
     private Stage window;
-    private Integer[][] numbers = new Integer[4][4];
     private Label[][] labels = new Label[4][4];
     private int score;
 
@@ -80,10 +79,10 @@ public class Game extends Application {
     public void initializeNumbers() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                numbers[i][j] = 0;
-                labels[i][j] = new Label(numbers[i][j].toString());
+                labels[i][j] = new Label("0");
             }
         }
+        insertRandom();
     }
 
     public StackPane createSquare(int i, int j) {
@@ -98,17 +97,43 @@ public class Game extends Application {
     }
 
     public void updateLabels(String direction) {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                numbers[i][j]++;
-                labels[i][j].setText(numbers[i][j].toString());
-            }
-        }
+        int freeSpaces = 16;
+
+
+        //use labels[x][y]
+        //Integer.parseInt(labels[x][y].getText());
+        //run comparison before this method
+        insertRandom();
+
     }
+
     public void gameOver() {
       GameOver over = new GameOver();
       over.start(window);
     }
+
+    public void insertRandom() {
+      boolean randomInserted = false;
+      int randX, randY, spot;
+      //While the random number has not been inserted, run.
+      while(!randomInserted) {
+        //Check random spot on the grid
+        randX = (int) (4 * Math.random());
+        randY = (int) (4 * Math.random());
+        //If spot is free, place a 2 or 4 there
+        spot = Integer.parseInt(labels[randX][randY].getText());
+        if(spot == 0) {
+          if((int) (99 * Math.random()) > 10) {
+            labels[randX][randY].setText("2");
+          } else {
+            labels[randX][randY].setText("4");
+          }
+          randomInserted = true;
+        }
+
+      }
+    }
+
     public static void main(String args[]) {
         launch(args);
     }
