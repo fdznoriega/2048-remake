@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 public class Game extends Application {
 
     private Square[][] squareArray = new Square[4][4];
+    private Integer[][] copyArray = new Integer[4][4];
     private int score;
     private Stage window;
 
@@ -29,6 +30,7 @@ public class Game extends Application {
         window = stage;
         score = 0;
 
+        initializeCopyArray();
         initializeNumbers();
 
         VBox vbox = new VBox();
@@ -65,7 +67,6 @@ public class Game extends Application {
                     case DOWN:  updateLabels("down");  break;
                     case LEFT:  updateLabels("left");  break;
                     case RIGHT: updateLabels("right"); break;
-                    case D: break;
                 }
             }
         });
@@ -83,7 +84,16 @@ public class Game extends Application {
         insertRandom();
     }
 
+    public void initializeCopyArray() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                copyArray[i][j] = 0;
+            }
+        }
+    }
+
     public void updateLabels(String direction) {
+
         switch (direction) {
             case "up":
                 addAndMoveUp();
@@ -103,8 +113,30 @@ public class Game extends Application {
           gameOver();
         } else {
           if(!boardIsFull()) {
-            insertRandom();
+            if(gridChanged()) {
+                insertRandom();
+            }
           }
+        }
+        updateCopyArray();
+    }
+
+    public boolean gridChanged() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (copyArray[i][j] != squareArray[i][j].getNum()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void updateCopyArray() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                copyArray[i][j] = squareArray[i][j].getNum();
+            }
         }
     }
 
