@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,10 +22,11 @@ public class Game extends Application {
 
     private Square[][] squareArray = new Square[4][4];
     private int score;
+    private Stage window;
 
     @Override
     public void start(Stage stage) {
-
+        window = stage;
         score = 0;
 
         initializeNumbers();
@@ -80,21 +80,32 @@ public class Game extends Application {
                 squareArray[i][j] = new Square();
             }
         }
-        //insertRandom();
+        insertRandom();
     }
 
     public void updateLabels(String direction) {
         switch (direction) {
             case "up":
+                addAndMoveUp();
                 break;
             case "down":
+                addAndMoveDown();
                 break;
             case "left":
+                addAndMoveLeft();
                 break;
             case "right":
+                addAndMoveRight();
                 break;
         }
-        insertRandom();
+        setBacktoChangeable();
+        if(checkForGameOver()) {
+          gameOver();
+        } else {
+          if(!boardIsFull()) {
+            insertRandom();
+          }
+        }
     }
 
     public void insertRandom() {
@@ -117,6 +128,189 @@ public class Game extends Application {
         }
 
       }
+    }
+
+    public void setBacktoChangeable() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                squareArray[i][j].setChangeable(true);
+            }
+        }
+    }
+
+    public void addAndMoveUp() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = j + 1; k < 4; k++) {
+                    if (squareArray[i][j].getNum() == squareArray[i][k].getNum() &&
+                        squareArray[i][j].getChangeable() &&
+                        squareArray[i][j].getNum() != 0) {
+
+                        squareArray[i][j].setNum(squareArray[i][j].getNum() + squareArray[i][k].getNum());
+                        squareArray[i][k].setNum(0);
+                        squareArray[i][j].setChangeable(false);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (squareArray[i][j].getNum() == 0) {
+                    for (int k = j + 1; k < 4; k++) {
+                        if (squareArray[i][k].getNum() != 0) {
+                            squareArray[i][j].setNum(squareArray[i][k].getNum());
+                            squareArray[i][k].setNum(0);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void addAndMoveDown() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j > 0; j--) {
+                for (int k = j - 1; k > -1; k--) {
+                    if (squareArray[i][j].getNum() == squareArray[i][k].getNum() &&
+                        squareArray[i][j].getChangeable() &&
+                        squareArray[i][j].getNum() != 0) {
+
+                        squareArray[i][j].setNum(squareArray[i][j].getNum() + squareArray[i][k].getNum());
+                        squareArray[i][k].setNum(0);
+                        squareArray[i][j].setChangeable(false);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j > 0; j--) {
+                if (squareArray[i][j].getNum() == 0) {
+                    for (int k = j - 1; k > -1; k--) {
+                        if (squareArray[i][k].getNum() != 0) {
+                            squareArray[i][j].setNum(squareArray[i][k].getNum());
+                            squareArray[i][k].setNum(0);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void addAndMoveLeft() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = j + 1; k < 4; k++) {
+                    if (squareArray[j][i].getNum() == squareArray[k][i].getNum() &&
+                        squareArray[j][i].getChangeable() &&
+                        squareArray[j][i].getNum() != 0) {
+
+                        squareArray[j][i].setNum(squareArray[j][i].getNum() + squareArray[k][i].getNum());
+                        squareArray[k][i].setNum(0);
+                        squareArray[j][i].setChangeable(false);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (squareArray[j][i].getNum() == 0) {
+                    for (int k = j + 1; k < 4; k++) {
+                        if (squareArray[k][i].getNum() != 0) {
+                            squareArray[j][i].setNum(squareArray[k][i].getNum());
+                            squareArray[k][i].setNum(0);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void addAndMoveRight() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j > 0; j--) {
+                for (int k = j - 1; k > -1; k--) {
+                    if (squareArray[j][i].getNum() == squareArray[k][i].getNum() &&
+                        squareArray[j][i].getChangeable() &&
+                        squareArray[j][i].getNum() != 0) {
+
+                        squareArray[j][i].setNum(squareArray[j][i].getNum() + squareArray[k][i].getNum());
+                        squareArray[k][i].setNum(0);
+                        squareArray[j][i].setChangeable(false);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j > 0; j--) {
+                if (squareArray[j][i].getNum() == 0) {
+                    for (int k = j - 1; k > -1; k--) {
+                        if (squareArray[k][i].getNum() != 0) {
+                            squareArray[j][i].setNum(squareArray[k][i].getNum());
+                            squareArray[k][i].setNum(0);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //returns true if no moves left
+    public boolean noMoreMoves() {
+      //check each direction. use plus method.
+      //check up/down with 0, 1 and 0, 2
+
+      for(int i = 0; i < 4; i++) {
+        for(int j = 1; j < 3; j++) {
+          //check above and below
+          //if can add, return false
+          if(squareArray[i][j].getNum() == squareArray[i][j - 1].getNum()
+          || squareArray[i][j].getNum() == squareArray[i][j + 1].getNum()) {
+            return false;
+          }
+        }
+      }
+
+
+      //check left/right with 1, 0 and 2, 0
+      for(int i = 1; i < 3; i++) {
+        for(int j = 0; j < 4; j++) {
+          if(squareArray[i][j].getNum() == squareArray[i - 1][j].getNum()
+          || squareArray[i][j].getNum() == squareArray[i + 1][j].getNum()) {
+            return false;
+          }
+        }
+      }
+
+      //no more moves
+      return true;
+    }
+
+    public boolean boardIsFull() {
+      for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+          //if a number that isn't 0 is here, add 1 to spotsTaken
+          if(squareArray[i][j].getNum() == 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+    //ends game and sends to game over menu
+    public void gameOver() {
+        GameOver over = new GameOver();
+        over.start(window);
+    }
+
+    //returns true if the game is over
+    public boolean checkForGameOver() {
+      if(boardIsFull()) { return noMoreMoves(); }
+      else              { return false;         }
+
     }
 
     public static void main(String args[]) {
